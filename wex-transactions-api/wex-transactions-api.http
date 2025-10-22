@@ -1,0 +1,6 @@
+@wex_transactions_api_HostAddress = http://localhost:5152
+
+GET {{wex_transactions_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
