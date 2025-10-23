@@ -1,5 +1,5 @@
 services:
-  # PostgreSQL Database Service
+
   db:
     image: postgres:16-alpine
     container_name: purchase_db
@@ -8,21 +8,15 @@ services:
       POSTGRES_USER: wex_user
       POSTGRES_PASSWORD: wexApiTest@01235
     ports:
-      # Maps your local machine's port 5432 to the container's port 5432
-      # Allows you to connect to the DB with a tool like DBeaver or PgAdmin
       - "5432:5432"
     volumes:
-      # Persists the database data on your host machine
       - postgres_data:/var/lib/postgresql/data
   
-  # Your .NET 8 API Service
   api:
     container_name: purchase_api
     build:
-      # The context is the current directory (solution root)
       context: .
-      # The path to the Dockerfile, relative to the context
-      dockerfile: wex-transactions-api/Dockerfile
+      dockerfile: Dockerfile
       target: final
     ports:
       # Maps your local machine's port 8080 to the container's port 8080
@@ -34,26 +28,14 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_ENVIRONMENT=Development
-      # --- NEW HTTPS CONFIGURATION ---
-      # 1. Path to the certificate *inside* the container
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      # 2. Password for the certificate
       - ASPNETCORE_Kestrel__Certificates__Default__Password=Wex@1234
-      # --- End of HTTPS Configuration ---
-      
-      # *** CRITICAL ***
-      # Overrides the connection string from appsettings.json
-      # 'db' is the service name of the PostgreSQL container
       - ConnectionStrings__DefaultConnection=Server=db;Port=5432;Database=purchases_db;User Id=wex_user;Password=wexApiTest@01235;
       - TreasuryApi__BaseUrl=https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange
     depends_on:
-      # Tells Docker to start the 'db' service before starting the 'api' service
       - db
     volumes:
-      # --- NEW VOLUME MOUNT ---
-      # Mounts your local cert file into the container
-      # :ro makes it read-only, which is a best practice
       - ./.certs/aspnetapp.pfx:/https/aspnetapp.pfx:ro
-# Defines the named volume for data persistence
+
 volumes:
   postgres_data:
