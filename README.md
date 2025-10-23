@@ -1,8 +1,8 @@
 # 🧾 WEX Transactions API
 
-[![Build Status](https://github.com/your-org/wex-transactions-api/actions/workflows/build.yml/badge.svg)](https://github.com/your-org/wex-transactions-api/actions)
-[![Test Coverage](https://img.shields.io/codecov/c/github/your-org/wex-transactions-api.svg)](https://codecov.io/gh/your-org/wex-transactions-api)
-[![Docker Build](https://img.shields.io/docker/v/your-org/wex-transactions-api?label=docker)](https://hub.docker.com/r/your-org/wex-transactions-api)
+[![Build Status](https://github.com/lcfournier82/WEX-Transactions/actions/workflows/build.yml/badge.svg)](https://github.com/lcfournier82/WEX-Transactions/actions)
+[![codecov](https://codecov.io/github/lcfournier82/WEX-Transactions/graph/badge.svg?token=J0IUQNOU9Y)](https://codecov.io/github/lcfournier82/WEX-Transactions)
+[![Docker Build](https://img.shields.io/docker/v/leonardofournier/wex-transactions-api?label=docker)](https://hub.docker.com/r/leonardofournier/wex-transactions-api)
 
 ## 📘 Overview
 
@@ -15,7 +15,7 @@ The system follows **Clean Architecture** principles and is organized into multi
 - **Web** — ASP.NET Core Web API layer  
 - **Tests** — Integration and unit tests for service validation  
 
-The solution leverages **PostgreSQL** as the database, **Elasticsearch** for logs, and **Docker Compose** for environment orchestration.
+The solution leverages **PostgreSQL** as the database and **Docker Compose** for environment orchestration.
 
 ---
 
@@ -103,7 +103,6 @@ docker compose up -d
 |-----------------|-------------------------------|
 | API (Swagger)   | http://localhost:8080/swagger |
 | PostgreSQL      | localhost:5432                |
-| Elasticsearch   | http://localhost:9200         |
 
 ---
 
@@ -113,7 +112,7 @@ docker compose up -d
 |-----------|--------------|----------------|
 | `ASPNETCORE_ENVIRONMENT` | Environment name | `Development` |
 | `ConnectionStrings__DefaultConnection` | PostgreSQL connection string | `Host=postgres;Port=5432;Database=purchases_db;Username=wex_user;Password=wexApiTest@01235` |
-| `ElasticConfiguration__Uri` | Elasticsearch endpoint | `http://elasticsearch:9200` |
+| `TreasuryApi__BaseUrl` | Fiscal Data Treasury API | `https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange` |
 
 ---
 

@@ -1,0 +1,50 @@
+name: Coverage (.NET 8)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore WEXTransactions.sln
+
+      - name: Build solution
+        run: dotnet build WEXTransactions.sln --configuration Release --no-restore
+
+      - name: Run tests with coverage
+        working-directory: ./WEX.TransactionAPI.Tests
+        run: |
+          dotnet test \
+            --configuration Release \
+            --no-build \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=../coverage/ \
+            /p:CoverletOutputFormat=cobertura
+      
+      - name: Check coverage file
+        run: |
+          echo "🔍 Searching for coverage reports..."
+          ls -R ./coverage || echo "⚠️ No coverage folder found"
+          find . -type f -name "*.cobertura.xml" || echo "❌ No cobertura file found"
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/coverage.cobertura.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
