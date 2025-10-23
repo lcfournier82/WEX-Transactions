@@ -24,9 +24,6 @@ jobs:
 
       - name: Build solution
         run: dotnet build WEXTransactions.sln --configuration Release --no-restore
-        
-      - name: Create coverage folder
-        run: mkdir -p ./coverage
 
       - name: Run tests with coverage
         working-directory: ./WEX.TransactionAPI.Tests
@@ -34,19 +31,25 @@ jobs:
           dotnet test \
             --configuration Release \
             --no-build \
-            /p:CollectCoverage=true \
-            /p:CoverletOutputFormat=cobertura \
-            /p:CoverletOutput=../coverage/coverage.cobertura.xml
-      
-      - name: Check coverage file
+            --collect:"XPlat Code Coverage"
+
+      - name: Collect cobertura coverage file
+        working-directory: ./WEX.TransactionAPI.Tests
         run: |
           echo "🔍 Searching for coverage reports..."
-          ls -R ./coverage || echo "⚠️ No coverage folder found"
-          find ./coverage -type f -name "*.cobertura.xml" || echo "❌ No cobertura file found"
+          $source = Get-ChildItem -Path ./TestResults/ -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
+          if ($null -eq $source) { Write-Error "❌ No cobertura file found"; exit 1 }
+          New-Item -ItemType Directory -Force -Path ./coverage
+          Copy-Item -Path $source.FullName -Destination ./coverage/coverage.cobertura.xml -Force
+          echo "✅ Coverage file copied to ./coverage/coverage.cobertura.xml"
+
+      - name: Check coverage file
+        run: |
+          ls -R ./WEX.TransactionAPI.Tests/coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          files: ./coverage/coverage.cobertura.xml
+          files: ./WEX.TransactionAPI.Tests/coverage/coverage.cobertura.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
