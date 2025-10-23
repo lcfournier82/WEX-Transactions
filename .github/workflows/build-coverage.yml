@@ -36,12 +36,15 @@ jobs:
       - name: Collect cobertura coverage file
         working-directory: ./WEX.TransactionAPI.Tests
         run: |
-          echo "🔍 Searching for coverage reports..."
-          $source = Get-ChildItem -Path ./TestResults/ -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
-          if ($null -eq $source) { Write-Error "❌ No cobertura file found"; exit 1 }
-          New-Item -ItemType Directory -Force -Path ./coverage
-          Copy-Item -Path $source.FullName -Destination ./coverage/coverage.cobertura.xml -Force
-          echo "✅ Coverage file copied to ./coverage/coverage.cobertura.xml"
+            echo "🔍 Searching for coverage reports..."
+            COVERAGE_FILE=$(find ./TestResults -type f -name "coverage.cobertura.xml" | head -n 1)
+            if [ -z "$COVERAGE_FILE" ]; then
+                echo "❌ No cobertura file found"
+                exit 1
+            fi
+            mkdir -p ./coverage
+            cp "$COVERAGE_FILE" ./coverage/coverage.cobertura.xml
+            echo "✅ Coverage file copied to ./coverage/coverage.cobertura.xml"
 
       - name: Check coverage file
         run: |
