@@ -24,6 +24,9 @@ jobs:
 
       - name: Build solution
         run: dotnet build WEXTransactions.sln --configuration Release --no-restore
+        
+      - name: Create coverage folder
+        run: mkdir -p ./coverage
 
       - name: Run tests with coverage
         working-directory: ./WEX.TransactionAPI.Tests
@@ -32,19 +35,18 @@ jobs:
             --configuration Release \
             --no-build \
             /p:CollectCoverage=true \
-            /p:CoverletOutput=../coverage/ \
-            /p:CoverletOutputFormat=cobertura
+            /p:CoverletOutputFormat=cobertura \
+            /p:CoverletOutput=../coverage/coverage.cobertura.xml
       
       - name: Check coverage file
         run: |
           echo "🔍 Searching for coverage reports..."
           ls -R ./coverage || echo "⚠️ No coverage folder found"
-          find . -type f -name "*.cobertura.xml" || echo "❌ No cobertura file found"
-      
+          find ./coverage -type f -name "*.cobertura.xml" || echo "❌ No cobertura file found"
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/coverage.cobertura.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-
