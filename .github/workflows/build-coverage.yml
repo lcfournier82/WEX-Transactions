@@ -26,12 +26,13 @@ jobs:
         run: dotnet build WEXTransactions.sln --configuration Release --no-restore
 
       - name: Run tests with coverage
+        working-directory: ./WEX.TransactionAPI.Tests
         run: |
-          dotnet test ./WEX.TransactionAPI.Tests/WEX.TransactionAPI.Tests.csproj \
+          dotnet test \
             --configuration Release \
             --no-build \
             /p:CollectCoverage=true \
-            /p:CoverletOutput=./coverage/ \
+            /p:CoverletOutput=../coverage/ \
             /p:CoverletOutputFormat=cobertura
       
       - name: Check coverage file
