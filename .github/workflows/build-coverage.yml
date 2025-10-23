@@ -26,11 +26,15 @@ jobs:
         run: dotnet build WEXTransactions.sln --configuration Release --no-restore
 
       - name: Run tests with coverage
-        run: dotnet test WEX.TransactionAPI.Tests/WEX.TransactionAPI.Tests.csproj --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutput=./TestResults/coverage/ /p:CoverletOutputFormat=cobertura
+        run: dotnet test WEX.TransactionAPI.Tests/WEX.TransactionAPI.Tests.csproj --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutput=$(pwd)/coverage/ /p:CoverletOutputFormat=cobertura
+      
+      - name: Debug coverage output
+        run: |
+          find . -type f -name "*.cobertura.xml" || echo "No coverage file found"
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          files: ./WEX.TransactionAPI.Tests/TestResults/coverage/coverage.cobertura.xml
+          files: ./coverage/coverage.cobertura.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
