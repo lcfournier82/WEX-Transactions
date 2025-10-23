@@ -1,0 +1,38 @@
+name: Build and Test (.NET 8)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore WEXTransactions.sln
+
+      - name: Build solution
+        run: dotnet build WEXTransactions.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test WEX.TransactionAPI.Tests/WEX.TransactionAPI.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
+
+      - name: Publish Web API
+        run: dotnet publish wex-transactions-api/WEX.TransactionAPI.Web.csproj -c Release -o ./publish --no-build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wex-transactions-api
+          path: ./publish
