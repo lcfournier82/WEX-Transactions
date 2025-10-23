@@ -1,8 +1,8 @@
 # 🧾 WEX Transactions API
 
-[![Build Status](https://github.com/your-org/wex-transactions-api/actions/workflows/build.yml/badge.svg)](https://github.com/your-org/wex-transactions-api/actions)
-[![Test Coverage](https://img.shields.io/codecov/c/github/your-org/wex-transactions-api.svg)](https://codecov.io/gh/your-org/wex-transactions-api)
-[![Docker Build](https://img.shields.io/docker/v/your-org/wex-transactions-api?label=docker)](https://hub.docker.com/r/your-org/wex-transactions-api)
+[![Build Status](https://github.com/tayrasys/wex-transactions-api/actions/workflows/build.yml/badge.svg)](https://github.com/tayrasys/wex-transactions-api/actions)
+[![Test Coverage](https://img.shields.io/codecov/c/github/tayrasys/wex-transactions-api.svg)](https://codecov.io/gh/tayrasys/wex-transactions-api)
+[![Docker Build](https://img.shields.io/docker/v/leonardofournier/wex-transactions-api?label=docker)](https://hub.docker.com/r/leonardofournier/wex-transactions-api)
 
 ## 📘 Overview
 
