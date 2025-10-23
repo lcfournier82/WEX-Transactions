@@ -1,4 +1,4 @@
-name: Build and Test (.NET 8)
+name: Build, Test and Coverage (.NET 8)
 
 on:
   push:
@@ -25,14 +25,17 @@ jobs:
       - name: Build solution
         run: dotnet build WEXTransactions.sln --configuration Release --no-restore
 
-      - name: Run tests
-        run: dotnet test WEX.TransactionAPI.Tests/WEX.TransactionAPI.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=test_results.trx"
+      - name: Run tests with coverage
+        run: dotnet test WEX.TransactionAPI.Tests/WEX.TransactionAPI.Tests.csproj \
+          --configuration Release \
+          --no-build \
+          /p:CollectCoverage=true \
+          /p:CoverletOutputFormat=cobertura \
+          /p:CoverletOutput=./coverage/
 
-      - name: Publish Web API
-        run: dotnet publish wex-transactions-api/WEX.TransactionAPI.Web.csproj -c Release -o ./publish --no-build
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          name: wex-transactions-api
-          path: ./publish
+          files: ./coverage/coverage.cobertura.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
